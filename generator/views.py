@@ -28,7 +28,8 @@ def call_model(client, model, prompt, temperature=0.5, seed=None):
     return response.choices[0].message.content
 
 
-# 定义各部分生成函数
+# 定义测试大纲各部分生成函数
+# 1.引言
 def generate_intro(input_text):
     prompt = f"""
     根据以下需求说明：
@@ -47,7 +48,7 @@ def generate_intro(input_text):
     """
     return call_model(client, model="Qwen2-5-Coder-32B-Instruct", prompt=prompt)
 
-
+# 2.测试准备
 def generate_test_preparation(input_text):
     prompt = f"""
     根据以下需求说明：
@@ -66,7 +67,7 @@ def generate_test_preparation(input_text):
     """
     return call_model(client, model="Qwen2-5-Coder-32B-Instruct", prompt=prompt)
 
-
+# 3.需求可追踪性
 def generate_test_traceability(input_text):
     prompt = f"""
     根据以下需求说明：
@@ -81,7 +82,7 @@ def generate_test_traceability(input_text):
     """
     return call_model(client, model="Qwen2-5-Coder-32B-Instruct", prompt=prompt)
 
-
+# 4.测试说明
 def generate_test_description(input_text):
     prompt = f"""
     根据以下需求说明：
@@ -96,7 +97,7 @@ def generate_test_description(input_text):
     """
     return call_model(client, model="Qwen2-5-Coder-32B-Instruct", prompt=prompt)
 
-
+# 测试大纲生成
 def generate_test_outline(request):
     input_text = request.POST.get("input_text", "")
     if not input_text:
@@ -111,3 +112,18 @@ def generate_test_outline(request):
     # 合并内容
     outline = f"{intro}\n\n{preparation}\n\n{traceability}\n\n{description}"
     return JsonResponse({"outline": outline})
+
+# 需求分析生成
+# todo：在这里写需求部分代码，暂时先写一个空的函数，仿照前面测试的生成，通用的可以直接调。
+# todo：分模块生成，可以参考前面标号1、2、3、4的函数
+def generate_requirement(request):
+    input_text = request.POST.get("input_text", "")
+    if not input_text:
+        return JsonResponse({"error": "No input text provided"}, status=400)
+
+    # 生成各部分内容
+    # todo 在这里分模块生成
+
+    # todo 合并
+    requirement = "这是一个暂时的合并结果"
+    return JsonResponse({"requirement": requirement})
