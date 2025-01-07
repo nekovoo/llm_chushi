@@ -4,6 +4,14 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import render
 from openai import OpenAI
+import logging
+
+# 配置日志记录
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+logger.addHandler(handler)
 
 # 初始化大模型 API
 api_kwargs = {
@@ -100,17 +108,26 @@ def generate_test_description(input_text):
 # 测试大纲生成
 def generate_test_outline(request):
     input_text = request.POST.get("input_text", "")
+
     if not input_text:
+        logger.error("No input text provided")
         return JsonResponse({"error": "No input text provided"}, status=400)
 
+    logger.info(f"Received input text: {input_text}")
     # 生成各部分内容
     intro = generate_intro(input_text)
+    logger.info(f"Generated intro: {intro}")  # 打印引言部分
     preparation = generate_test_preparation(input_text)
+    logger.info(f"Generated preparation: {preparation}")  # 打印测试准备部分
     traceability = generate_test_traceability(input_text)
+    logger.info(f"Generated traceability: {traceability}")  # 打印需求可追踪性部分
     description = generate_test_description(input_text)
+    logger.info(f"Generated description: {description}")  # 打印测试说明部分
 
     # 合并内容
     outline = f"{intro}\n\n{preparation}\n\n{traceability}\n\n{description}"
+    logger.info(f"Final generated outline: {outline}")  # 打印生成的完整大纲
+
     return JsonResponse({"outline": outline})
 
 # 需求分析生成
